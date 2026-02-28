@@ -1,23 +1,20 @@
-// app/api/tasks/[id]/route.ts
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Task from '@/models/Task';
 
-// TypeScript ke liye params ka type define karna
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function PUT(request: Request, props: Params) {
+// PUT: Task ko update karne ke liye
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> } // Yahan Promise add kiya
+) {
   try {
-    const params = await props.params;
     await connectToDatabase();
-    const body = await request.json();
     
-    // Task ko ID ke basis par update karna
-    const updatedTask = await Task.findByIdAndUpdate(params.id, body, { returnDocument: 'after' });
+    // Naye Next.js ke hisaab se params ko await karna zaroori hai
+    const { id } = await params; 
+    
+    const body = await request.json();
+    const updatedTask = await Task.findByIdAndUpdate(id, body, { new: true });
     
     if (!updatedTask) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
@@ -25,17 +22,22 @@ export async function PUT(request: Request, props: Params) {
     
     return NextResponse.json(updatedTask);
   } catch (error) {
-    console.error("PUT Task Error:", error);
     return NextResponse.json({ error: 'Failed to update task' }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, props: Params) {
+// DELETE: Task ko delete karne ke liye
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> } // Yahan Promise add kiya
+) {
   try {
-    const params = await props.params;
     await connectToDatabase();
     
-    const deletedTask = await Task.findByIdAndDelete(params.id);
+    // Naye Next.js ke hisaab se params ko await karna zaroori hai
+    const { id } = await params;
+    
+    const deletedTask = await Task.findByIdAndDelete(id);
     
     if (!deletedTask) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
@@ -43,7 +45,6 @@ export async function DELETE(request: Request, props: Params) {
     
     return NextResponse.json({ message: 'Task deleted successfully' });
   } catch (error) {
-    console.error("DELETE Task Error:", error);
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
   }
 }
