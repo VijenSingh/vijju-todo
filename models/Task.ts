@@ -6,6 +6,10 @@ export interface ITask extends Document {
   dueDate?: Date;
   status: 'To Do' | 'In Progress' | 'Done';
   completed?: boolean;
+  isJiraTicket?: boolean;
+  jiraTicketId?: string;
+  jiraTicketUrl?: string;
+  jiraStatus?: string; // Naya field Jira ke actual status ke liye
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,11 +21,14 @@ const TaskSchema: Schema<ITask> = new Schema(
     dueDate: { type: Date },
     status: { type: String, enum: ['To Do', 'In Progress', 'Done'], default: 'To Do' },
     completed: { type: Boolean, default: false },
+    isJiraTicket: { type: Boolean, default: false },
+    jiraTicketId: { type: String },
+    jiraTicketUrl: { type: String },
+    jiraStatus: { type: String }, // Naya field schema mein
   },
   { timestamps: true }
 );
 
-// Prevent recompilation / model overwrite in dev
 const Task: Model<ITask> = (mongoose.models.Task as Model<ITask>) || mongoose.model<ITask>('Task', TaskSchema);
 
 export default Task;

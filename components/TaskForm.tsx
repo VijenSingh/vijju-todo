@@ -17,58 +17,33 @@ export default function TaskForm() {
     if (!title.trim()) return;
     setLoading(true);
     try {
-      const response = await axios.post('/api/tasks', {
-        title, description, dueDate: dueDate ? new Date(dueDate) : undefined,
-      });
+      const response = await axios.post('/api/tasks', { title, description, dueDate: dueDate ? new Date(dueDate) : undefined });
       dispatch(addTask(response.data));
       setTitle(''); setDescription(''); setDueDate('');
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch (error) {} finally { setLoading(false); }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 mb-8 transition-all hover:shadow-2xl">
-      <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <Plus className="text-blue-600" /> Create New Task
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 mb-8 transition-all">
+      <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+        <Plus className="text-blue-600 dark:text-blue-400" /> Add New Task
       </h2>
-      
-      <div className="flex flex-col gap-4">
-        <div className="relative">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1 relative">
           <Type className="absolute left-3 top-3 text-gray-400" size={20} />
-          <input 
-            type="text" placeholder="Task Title (e.g., Code review karna hai)" value={title}
-            onChange={(e) => setTitle(e.target.value)} required
-            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 font-medium"
-          />
+          <input type="text" placeholder="Task Title..." value={title} onChange={(e) => setTitle(e.target.value)} required className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-700 dark:text-white font-medium" />
         </div>
-
-        <div className="relative">
+        <div className="flex-1 relative">
           <AlignLeft className="absolute left-3 top-3 text-gray-400" size={20} />
-          <textarea 
-            placeholder="Description (Optional)" value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700 resize-none h-24"
-          />
+          <input type="text" placeholder="Short Description..." value={description} onChange={(e) => setDescription(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-700 dark:text-white" />
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mt-2">
-          <div className="relative w-full sm:w-auto flex-1">
-            <CalendarDays className="absolute left-3 top-3 text-gray-400" size={20} />
-            <input 
-              type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-600 cursor-pointer"
-            />
-          </div>
-          <button 
-            type="submit" disabled={loading}
-            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl flex justify-center items-center gap-2 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-70 shadow-lg hover:shadow-blue-500/30 transition-all font-semibold"
-          >
-            {loading ? 'Saving...' : 'Add Task'}
-          </button>
+        <div className="relative">
+          <CalendarDays className="absolute left-3 top-3 text-gray-400" size={20} />
+          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-600 dark:text-gray-300 cursor-pointer" />
         </div>
+        <button type="submit" disabled={loading} className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-xl hover:opacity-90 disabled:opacity-70 transition-all font-bold">
+          {loading ? '...' : 'Add'}
+        </button>
       </div>
     </form>
   );
