@@ -19,7 +19,7 @@ export async function GET() {
     const auth = Buffer.from(`${email}:${token}`).toString('base64');
 
     const jiraApiUrl = `${baseUrl}/rest/api/3/search/jql`;
-    const jqlQuery = '(assignee = currentUser() OR reporter = currentUser() OR watcher = currentUser() OR text ~ currentUser()) AND statusCategory != Done';
+    const jqlQuery = '(assignee = currentUser() OR reporter = currentUser() OR watcher = currentUser() OR text ~ currentUser())';
 
     const response = await axios.post(
       jiraApiUrl,
